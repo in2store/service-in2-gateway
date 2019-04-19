@@ -11,8 +11,12 @@ services:
       project.group: ${PROJECT_GROUP}
       project.name: ${PROJECT_NAME}
       project.version: ${PROJECT_VERSION}
+      upstreams: ${S_CLIENTAUTH_HOST},${S_CLIENTUSER_HOST}
     environment:
       GOENV: ${GOENV}
+      S_CLIENTAUTH_HOST: ${S_CLIENTAUTH_HOST}
+      S_CLIENTUSER_HOST: ${S_CLIENTUSER_HOST}
+      S_GITHUBCHANNELID: ${S_GITHUBCHANNELID}
       S_LOG_LEVEL: ${S_LOG_LEVEL}
     dns_search:
     - rancher.internal

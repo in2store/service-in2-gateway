@@ -1,2 +1,5 @@
 GOENV: DEV
+S_CLIENTAUTH_HOST: service-in2-auth.in2store.rancher.internal
+S_CLIENTUSER_HOST: service-in2-user.in2store.rancher.internal
+S_GITHUBCHANNELID: "565955135633625088"
 S_LOG_LEVEL: DEBUG
