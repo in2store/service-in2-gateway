@@ -56,7 +56,7 @@ func (req GetRepos) Output(ctx context.Context) (result interface{}, err error) 
 		return nil, errors.InternalError
 	}
 
-	repos, err := channel.GetRepos()
+	repos, err := channel.GetRepos(ctx)
 	if err != nil {
 		logrus.Errorf("[GetRepos] channel.GetRepos() err: %v", err)
 		return nil, errors.UpstreamError.StatusError().WithDesc(err.Error())

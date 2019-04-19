@@ -29,7 +29,18 @@ func (GithubChannel) ChannelID() uint64 {
 	return global.Config.GithubChannelID
 }
 
-func (*GithubChannel) GetRepos() ([]constants.Repo, error) {
+func (c *GithubChannel) GetRepos(ctx context.Context) ([]constants.Repo, error) {
+	repos, _, err := c.client.Repositories.List(ctx, "", &github.RepositoryListOptions{})
+	if err != nil {
+		return nil, err
+	}
 
-	panic("implement me")
+	result := make([]constants.Repo, 0)
+	for _, repo := range repos {
+		result = append(result, &GithubRepo{
+			*repo,
+		})
+	}
+
+	return result, nil
 }

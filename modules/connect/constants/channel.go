@@ -1,6 +1,8 @@
 package constants
 
+import "context"
+
 type RepoChannel interface {
 	ChannelID() uint64
-	GetRepos() ([]Repo, error)
+	GetRepos(ctx context.Context) ([]Repo, error)
 }
