@@ -1,0 +1,10 @@
+name: service-in2-gateway
+group: in2store
+version: 0.0.0
+description: in2store 前端业务网关服务
+program_language: golang
+workflow:
+  extends: feature-pr
+scripts:
+  build: go build -v -o $PROJECT_NAME && libtools swagger
+  test: go test
