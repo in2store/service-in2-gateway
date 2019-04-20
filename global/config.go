@@ -2,6 +2,7 @@ package global
 
 import (
 	"github.com/in2store/service-in2-gateway/clients/client_in2_auth"
+	"github.com/in2store/service-in2-gateway/clients/client_in2_book"
 	"github.com/in2store/service-in2-gateway/clients/client_in2_user"
 	"github.com/johnnyeven/libtools/courier/client"
 	"github.com/johnnyeven/libtools/courier/transport_http"
@@ -22,6 +23,7 @@ var Config = struct {
 
 	ClientAuth *client_in2_auth.ClientIn2Auth
 	ClientUser *client_in2_user.ClientIn2User
+	ClientBook *client_in2_book.ClientIn2Book
 }{
 	Log: &log.Log{
 		Level: "DEBUG",
@@ -41,6 +43,11 @@ var Config = struct {
 	ClientAuth: &client_in2_auth.ClientIn2Auth{
 		Client: client.Client{
 			Host: "service-in2-auth.in2store.service.profzone.net",
+		},
+	},
+	ClientBook: &client_in2_book.ClientIn2Book{
+		Client: client.Client{
+			Host: "service-in2-book.in2store.service.profzone.net",
 		},
 	},
 }

@@ -12,6 +12,7 @@ type ClientIn2AuthInterface interface {
 	Authorize(req AuthorizeRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *AuthorizeResponse, err error)
 	CreateChannel(req CreateChannelRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *CreateChannelResponse, err error)
 	GetAuthURL(req GetAuthURLRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetAuthURLResponse, err error)
+	GetChannelByChannelID(req GetChannelByChannelIDRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetChannelByChannelIDResponse, err error)
 	GetSessionBySessionID(req GetSessionBySessionIDRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetSessionBySessionIDResponse, err error)
 	GetTokens(req GetTokensRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetTokensResponse, err error)
 }
@@ -67,7 +68,7 @@ type AuthorizeResponse struct {
 
 type CreateChannelRequest struct {
 	//
-	Body CreateChannelBody `fmt:"json" in:"body"`
+	Body CreateChannelParams `fmt:"json" in:"body"`
 }
 
 func (c ClientIn2Auth) CreateChannel(req CreateChannelRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *CreateChannelResponse, err error) {
@@ -109,6 +110,28 @@ type GetAuthURLResponse struct {
 	Body GetAuthURLResult
 }
 
+type GetChannelByChannelIDRequest struct {
+	// 通道ID
+	ChannelID uint64 `in:"path" name:"channelID"`
+}
+
+func (c ClientIn2Auth) GetChannelByChannelID(req GetChannelByChannelIDRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetChannelByChannelIDResponse, err error) {
+	resp = &GetChannelByChannelIDResponse{}
+	resp.Meta = github_com_johnnyeven_libtools_courier.Metadata{}
+
+	err = c.Request(c.Name+".GetChannelByChannelID", "GET", "/in2-auth/v0/channels/:channelID", req, metas...).
+		Do().
+		BindMeta(resp.Meta).
+		Into(&resp.Body)
+
+	return
+}
+
+type GetChannelByChannelIDResponse struct {
+	Meta github_com_johnnyeven_libtools_courier.Metadata
+	Body Channel
+}
+
 type GetSessionBySessionIDRequest struct {
 	// SessionID
 	SessionID string `in:"path" name:"sessionID"`
@@ -132,8 +155,6 @@ type GetSessionBySessionIDResponse struct {
 }
 
 type GetTokensRequest struct {
-	// 用户ID
-	UserID uint64 `in:"query" name:"userID"`
 	// 通道ID
 	ChannelID uint64 `in:"query" name:"channelID"`
 	// 分页大小
@@ -142,6 +163,8 @@ type GetTokensRequest struct {
 	// 分页偏移
 	// 默认为 0
 	Offset int32 `in:"query" name:"offset,omitempty"`
+	// 用户ID
+	UserID uint64 `in:"query" name:"userID"`
 }
 
 func (c ClientIn2Auth) GetTokens(req GetTokensRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetTokensResponse, err error) {

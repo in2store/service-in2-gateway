@@ -25,11 +25,13 @@ type Channel struct {
 	ClientSecret string `json:"clientSecret"`
 	// 名称
 	Name string `json:"name"`
+	// raw文件访问URL
+	RawURL string `json:"rawURL"`
 	// 交换tokenURL
 	TokenURL string `json:"tokenURL"`
 }
 
-type CreateChannelBody struct {
+type CreateChannelParams struct {
 	// 认证URL
 	AuthURL string `json:"authURL"`
 	// ClientID
