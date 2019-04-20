@@ -31,6 +31,8 @@ type Channel struct {
 	TokenURL string `json:"tokenURL"`
 }
 
+type ChannelList []Channel
+
 type CreateChannelParams struct {
 	// 认证URL
 	AuthURL string `json:"authURL"`

@@ -13,6 +13,7 @@ type ClientIn2AuthInterface interface {
 	CreateChannel(req CreateChannelRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *CreateChannelResponse, err error)
 	GetAuthURL(req GetAuthURLRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetAuthURLResponse, err error)
 	GetChannelByChannelID(req GetChannelByChannelIDRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetChannelByChannelIDResponse, err error)
+	GetChannels(metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetChannelsResponse, err error)
 	GetSessionBySessionID(req GetSessionBySessionIDRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetSessionBySessionIDResponse, err error)
 	GetTokens(req GetTokensRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetTokensResponse, err error)
 }
@@ -132,6 +133,23 @@ type GetChannelByChannelIDResponse struct {
 	Body Channel
 }
 
+func (c ClientIn2Auth) GetChannels(metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetChannelsResponse, err error) {
+	resp = &GetChannelsResponse{}
+	resp.Meta = github_com_johnnyeven_libtools_courier.Metadata{}
+
+	err = c.Request(c.Name+".GetChannels", "GET", "/in2-auth/v0/channels", nil, metas...).
+		Do().
+		BindMeta(resp.Meta).
+		Into(&resp.Body)
+
+	return
+}
+
+type GetChannelsResponse struct {
+	Meta github_com_johnnyeven_libtools_courier.Metadata
+	Body ChannelList
+}
+
 type GetSessionBySessionIDRequest struct {
 	// SessionID
 	SessionID string `in:"path" name:"sessionID"`
@@ -155,6 +173,8 @@ type GetSessionBySessionIDResponse struct {
 }
 
 type GetTokensRequest struct {
+	// 用户ID
+	UserID uint64 `in:"query" name:"userID"`
 	// 通道ID
 	ChannelID uint64 `in:"query" name:"channelID"`
 	// 分页大小
@@ -163,8 +183,6 @@ type GetTokensRequest struct {
 	// 分页偏移
 	// 默认为 0
 	Offset int32 `in:"query" name:"offset,omitempty"`
-	// 用户ID
-	UserID uint64 `in:"query" name:"userID"`
 }
 
 func (c ClientIn2Auth) GetTokens(req GetTokensRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetTokensResponse, err error) {

@@ -19,3 +19,11 @@ func GetChannelByChannelID(channelID uint64, client *client_in2_auth.ClientIn2Au
 	}
 	return &resp.Body, nil
 }
+
+func GetChannels(client *client_in2_auth.ClientIn2Auth) (client_in2_auth.ChannelList, error) {
+	resp, err := client.GetChannels()
+	if err != nil {
+		return nil, err
+	}
+	return resp.Body, nil
+}
