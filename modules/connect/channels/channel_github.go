@@ -29,10 +29,19 @@ func (GithubChannel) ChannelID() uint64 {
 	return global.Config.GithubChannelID
 }
 
-func (c *GithubChannel) GetRepos(ctx context.Context) ([]constants.Repo, error) {
-	repos, _, err := c.client.Repositories.List(ctx, "", &github.RepositoryListOptions{})
+func (c *GithubChannel) GetRepos(ctx context.Context, size, page int32) ([]constants.Repo, constants.PaginationInfo, error) {
+	var listOption *github.RepositoryListOptions
+	if size > 0 && page > 0 {
+		listOption = &github.RepositoryListOptions{
+			ListOptions: github.ListOptions{
+				Page:    int(page),
+				PerPage: int(size),
+			},
+		}
+	}
+	repos, resp, err := c.client.Repositories.List(ctx, "", listOption)
 	if err != nil {
-		return nil, err
+		return nil, constants.PaginationInfo{}, err
 	}
 
 	result := make([]constants.Repo, 0)
@@ -42,5 +51,10 @@ func (c *GithubChannel) GetRepos(ctx context.Context) ([]constants.Repo, error) 
 		})
 	}
 
-	return result, nil
+	return result, constants.PaginationInfo{
+		NextPage:  int32(resp.NextPage),
+		PrevPage:  int32(resp.PrevPage),
+		FirstPage: int32(resp.FirstPage),
+		LastPage:  int32(resp.LastPage),
+	}, nil
 }

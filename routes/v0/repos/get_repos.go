@@ -7,9 +7,11 @@ import (
 	"github.com/in2store/service-in2-gateway/global"
 	"github.com/in2store/service-in2-gateway/modules"
 	"github.com/in2store/service-in2-gateway/modules/connect"
+	"github.com/in2store/service-in2-gateway/modules/connect/constants"
 	"github.com/in2store/service-in2-gateway/routes/middleware"
 	"github.com/johnnyeven/libtools/courier"
 	"github.com/johnnyeven/libtools/courier/httpx"
+	"github.com/johnnyeven/libtools/timelib"
 	"github.com/sirupsen/logrus"
 )
 
@@ -22,10 +24,31 @@ type GetRepos struct {
 	httpx.MethodGet
 	// 通道ID
 	ChannelID uint64 `name:"channelID,string" in:"query"`
+	// 分页大小
+	// 默认为 10，-1 为查询所有
+	Size int32 `name:"size" in:"query" default:"10"  validate:"@int32[-1,50]"`
+	// 页码
+	// 默认为 0
+	Page int32 `name:"page,omitempty" in:"query" validate:"@int32[0,]"`
 }
 
 func (req GetRepos) Path() string {
 	return ""
+}
+
+type GetReposResultItem struct {
+	Name       string                 `json:"name"`
+	FullName   string                 `json:"fullName"`
+	HtmlUrl    string                 `json:"htmlUrl"`
+	CloneUrl   string                 `json:"cloneUrl"`
+	CreateTime timelib.MySQLTimestamp `json:"createTime"`
+	UpdateTime timelib.MySQLTimestamp `json:"updateTime"`
+	PushTime   timelib.MySQLTimestamp `json:"pushTime"`
+}
+
+type GetReposResult struct {
+	Data []GetReposResultItem `json:"data"`
+	constants.PaginationInfo
 }
 
 func (req GetRepos) Output(ctx context.Context) (result interface{}, err error) {
@@ -56,11 +79,32 @@ func (req GetRepos) Output(ctx context.Context) (result interface{}, err error) 
 		return nil, errors.InternalError
 	}
 
-	repos, err := channel.GetRepos(ctx)
+	repos, pagination, err := channel.GetRepos(ctx, req.Size, req.Page)
 	if err != nil {
 		logrus.Errorf("[GetRepos] channel.GetRepos() err: %v", err)
 		return nil, errors.UpstreamError.StatusError().WithDesc(err.Error())
 	}
 
-	return repos, nil
+	data := make([]GetReposResultItem, 0)
+	for _, r := range repos {
+		data = append(data, GetReposResultItem{
+			Name:       r.GetName(),
+			FullName:   r.GetFullName(),
+			HtmlUrl:    r.GetHTMLURL(),
+			CloneUrl:   r.GetCloneURL(),
+			CreateTime: timelib.MySQLTimestamp(r.GetCreatedAt()),
+			UpdateTime: timelib.MySQLTimestamp(r.GetUpdatedAt()),
+			PushTime:   timelib.MySQLTimestamp(r.GetPushedAt()),
+		})
+	}
+
+	return GetReposResult{
+		Data: data,
+		PaginationInfo: constants.PaginationInfo{
+			NextPage:  pagination.NextPage,
+			PrevPage:  pagination.PrevPage,
+			FirstPage: pagination.FirstPage,
+			LastPage:  pagination.LastPage,
+		},
+	}, nil
 }
