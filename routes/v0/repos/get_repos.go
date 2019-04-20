@@ -29,7 +29,7 @@ type GetRepos struct {
 	Size int32 `name:"size" in:"query" default:"10"  validate:"@int32[-1,50]"`
 	// 页码
 	// 默认为 0
-	Page int32 `name:"page,omitempty" in:"query" validate:"@int32[0,]"`
+	Page int32 `name:"page" in:"query" default:"1" validate:"@int32[0,]"`
 }
 
 func (req GetRepos) Path() string {
