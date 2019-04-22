@@ -20,7 +20,7 @@ func init() {
 type GetBookByBookID struct {
 	httpx.MethodGet
 	// 书籍ID
-	BookID uint64 `name:"bookID,string" in:"body"`
+	BookID uint64 `name:"bookID,string" in:"path"`
 }
 
 func (req GetBookByBookID) Path() string {
