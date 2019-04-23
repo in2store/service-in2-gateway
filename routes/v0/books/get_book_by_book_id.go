@@ -56,8 +56,8 @@ type GetBookByBookIDResult struct {
 	SummaryPath string `json:"summaryPath"`
 	// raw文件访问URL
 	RawURL string `json:"rawURL"`
-	// Summary文件入口
-	EntrySummary string `json:"entrySummary"`
+	// 文件入口
+	EntryFullURL string `json:"entryFullUrl"`
 }
 
 func (req GetBookByBookID) Output(ctx context.Context) (result interface{}, err error) {
@@ -92,6 +92,6 @@ func (req GetBookByBookID) Output(ctx context.Context) (result interface{}, err 
 		RepoFullName:   repo.RepoFullName,
 		SummaryPath:    repo.SummaryPath,
 		RawURL:         channel.RawURL,
-		EntrySummary:   filepath.Join(channel.RawURL, repo.RepoFullName, repo.RepoBranchName, repo.SummaryPath),
+		EntryFullURL:   filepath.Join(channel.RawURL, repo.RepoFullName, repo.RepoBranchName),
 	}, nil
 }
