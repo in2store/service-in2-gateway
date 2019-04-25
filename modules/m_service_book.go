@@ -51,8 +51,34 @@ type GetBooksResult struct {
 }
 
 type GetBooksResultItem struct {
-	client_in2_book.BookMeta
-	client_in2_book.BookRepo
+	// 业务ID
+	BookID uint64 `json:"bookID,string"`
+	// 文档语言
+	BookLanguage client_in2_book.BookLanguage `json:"bookLanguage"`
+	// 代码语言
+	CodeLanguage client_in2_book.CodeLanguage `json:"codeLanguage"`
+	// 简介
+	Comment string `json:"comment"`
+	// 封面图片key
+	CoverKey string `json:"coverKey"`
+	// 状态
+	Status client_in2_book.BookStatus `json:"status"`
+	// 标题
+	Title string `json:"title"`
+	// 作者ID
+	UserID uint64 `json:"userID,string"`
+	// 通道ID
+	ChannelID uint64 `json:"channelID,string"`
+	// 入口地址
+	EntryURL string `json:"entryURL"`
+	// 代码库分支
+	RepoBranchName string `json:"repoBranchName"`
+	// 代码库全名
+	RepoFullName string `json:"repoFullName"`
+	// Summary文件相对地址
+	SummaryPath string `json:"summaryPath"`
+
+	client_in2_book.OperateTime
 }
 
 func GetBooks(req client_in2_book.GetBooksMetaRequest, client *client_in2_book.ClientIn2Book) (*GetBooksResult, error) {
@@ -68,8 +94,23 @@ func GetBooks(req client_in2_book.GetBooksMetaRequest, client *client_in2_book.C
 			return nil, err
 		}
 		result = append(result, GetBooksResultItem{
-			meta,
-			*repo,
+			BookID:         meta.BookID,
+			BookLanguage:   meta.BookLanguage,
+			CodeLanguage:   meta.CodeLanguage,
+			Comment:        meta.Comment,
+			CoverKey:       meta.CoverKey,
+			Status:         meta.Status,
+			Title:          meta.Title,
+			UserID:         meta.UserID,
+			ChannelID:      repo.ChannelID,
+			EntryURL:       repo.EntryURL,
+			RepoBranchName: repo.RepoBranchName,
+			RepoFullName:   repo.RepoFullName,
+			SummaryPath:    repo.SummaryPath,
+			OperateTime: client_in2_book.OperateTime{
+				CreateTime: meta.CreateTime,
+				UpdateTime: meta.UpdateTime,
+			},
 		})
 	}
 
