@@ -12,6 +12,7 @@ type ClientIn2BookInterface interface {
 	CreateBook(req CreateBookRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *CreateBookResponse, err error)
 	GetBookMetaByBookID(req GetBookMetaByBookIDRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBookMetaByBookIDResponse, err error)
 	GetBookRepoByBookID(req GetBookRepoByBookIDRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBookRepoByBookIDResponse, err error)
+	GetBooksMeta(req GetBooksMetaRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBooksMetaResponse, err error)
 }
 
 type ClientIn2Book struct {
@@ -103,6 +104,36 @@ func (c ClientIn2Book) GetBookRepoByBookID(req GetBookRepoByBookIDRequest, metas
 type GetBookRepoByBookIDResponse struct {
 	Meta github_com_johnnyeven_libtools_courier.Metadata
 	Body BookRepo
+}
+
+type GetBooksMetaRequest struct {
+	// 用户ID
+	UserID uint64 `in:"query" name:"userID"`
+	// 状态
+	Status BookStatus `in:"query" name:"status"`
+	// 分页大小
+	// 默认为 10，-1 为查询所有
+	Size int32 `default:"10" in:"query" name:"size,omitempty"`
+	// 分页偏移
+	// 默认为 0
+	Offset int32 `in:"query" name:"offset,omitempty"`
+}
+
+func (c ClientIn2Book) GetBooksMeta(req GetBooksMetaRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBooksMetaResponse, err error) {
+	resp = &GetBooksMetaResponse{}
+	resp.Meta = github_com_johnnyeven_libtools_courier.Metadata{}
+
+	err = c.Request(c.Name+".GetBooksMeta", "GET", "/in2-book/v0/books", req, metas...).
+		Do().
+		BindMeta(resp.Meta).
+		Into(&resp.Body)
+
+	return
+}
+
+type GetBooksMetaResponse struct {
+	Meta github_com_johnnyeven_libtools_courier.Metadata
+	Body GetBooksMetaResult
 }
 
 func (c ClientIn2Book) Swagger(metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *SwaggerResponse, err error) {

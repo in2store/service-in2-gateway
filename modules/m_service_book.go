@@ -36,3 +36,11 @@ func GetBookRepoByBookID(bookID uint64, client *client_in2_book.ClientIn2Book) (
 	}
 	return &resp.Body, nil
 }
+
+func GetBooksMeta(req client_in2_book.GetBooksMetaRequest, client *client_in2_book.ClientIn2Book) (*client_in2_book.GetBooksMetaResult, error) {
+	resp, err := client.GetBooksMeta(req)
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Body, nil
+}

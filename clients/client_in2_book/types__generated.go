@@ -34,6 +34,8 @@ type BookMeta struct {
 	UserID uint64 `json:"userID,string"`
 }
 
+type BookMetaList []BookMeta
+
 type BookRepo struct {
 	//
 	PrimaryID
@@ -102,6 +104,13 @@ type CreateBookResult struct {
 type ErrorField = github_com_johnnyeven_libtools_courier_status_error.ErrorField
 
 type ErrorFields = github_com_johnnyeven_libtools_courier_status_error.ErrorFields
+
+type GetBooksMetaResult struct {
+	//
+	Data BookMetaList `json:"data"`
+	//
+	Total int32 `json:"total"`
+}
 
 type JSONBytes = github_com_johnnyeven_libtools_courier_swagger.JSONBytes
 

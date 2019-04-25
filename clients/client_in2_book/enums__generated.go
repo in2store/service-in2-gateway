@@ -22,11 +22,9 @@ const (
 type In2BookBookStatus uint
 
 const (
-	IN2_BOOK_BOOK_STATUS_UNKNOWN   In2BookBookStatus = iota
-	IN2_BOOK_BOOK_STATUS__PENGDING                   // 等待导入
-	IN2_BOOK_BOOK_STATUS__PROCESS                    // 导入中
-	IN2_BOOK_BOOK_STATUS__READY                      // 就绪
-	IN2_BOOK_BOOK_STATUS__NORMAL                     // 正常展示
+	IN2_BOOK_BOOK_STATUS_UNKNOWN In2BookBookStatus = iota
+	IN2_BOOK_BOOK_STATUS__READY                    // 就绪
+	IN2_BOOK_BOOK_STATUS__NORMAL                   // 正常展示
 )
 
 // swagger:enum
@@ -142,10 +140,8 @@ var InvalidIn2BookBookStatus = errors.New("invalid In2BookBookStatus")
 
 func init() {
 	github_com_johnnyeven_libtools_courier_enumeration.RegisterEnums("In2BookBookStatus", map[string]string{
-		"PENGDING": "等待导入",
-		"PROCESS":  "导入中",
-		"READY":    "就绪",
-		"NORMAL":   "正常展示",
+		"READY":  "就绪",
+		"NORMAL": "正常展示",
 	})
 }
 
@@ -153,10 +149,6 @@ func ParseIn2BookBookStatusFromString(s string) (In2BookBookStatus, error) {
 	switch s {
 	case "":
 		return IN2_BOOK_BOOK_STATUS_UNKNOWN, nil
-	case "PENGDING":
-		return IN2_BOOK_BOOK_STATUS__PENGDING, nil
-	case "PROCESS":
-		return IN2_BOOK_BOOK_STATUS__PROCESS, nil
 	case "READY":
 		return IN2_BOOK_BOOK_STATUS__READY, nil
 	case "NORMAL":
@@ -169,10 +161,6 @@ func ParseIn2BookBookStatusFromLabelString(s string) (In2BookBookStatus, error) 
 	switch s {
 	case "":
 		return IN2_BOOK_BOOK_STATUS_UNKNOWN, nil
-	case "等待导入":
-		return IN2_BOOK_BOOK_STATUS__PENGDING, nil
-	case "导入中":
-		return IN2_BOOK_BOOK_STATUS__PROCESS, nil
 	case "就绪":
 		return IN2_BOOK_BOOK_STATUS__READY, nil
 	case "正常展示":
@@ -187,20 +175,14 @@ func (In2BookBookStatus) EnumType() string {
 
 func (In2BookBookStatus) Enums() map[int][]string {
 	return map[int][]string{
-		int(IN2_BOOK_BOOK_STATUS__PENGDING): {"PENGDING", "等待导入"},
-		int(IN2_BOOK_BOOK_STATUS__PROCESS):  {"PROCESS", "导入中"},
-		int(IN2_BOOK_BOOK_STATUS__READY):    {"READY", "就绪"},
-		int(IN2_BOOK_BOOK_STATUS__NORMAL):   {"NORMAL", "正常展示"},
+		int(IN2_BOOK_BOOK_STATUS__READY):  {"READY", "就绪"},
+		int(IN2_BOOK_BOOK_STATUS__NORMAL): {"NORMAL", "正常展示"},
 	}
 }
 func (v In2BookBookStatus) String() string {
 	switch v {
 	case IN2_BOOK_BOOK_STATUS_UNKNOWN:
 		return ""
-	case IN2_BOOK_BOOK_STATUS__PENGDING:
-		return "PENGDING"
-	case IN2_BOOK_BOOK_STATUS__PROCESS:
-		return "PROCESS"
 	case IN2_BOOK_BOOK_STATUS__READY:
 		return "READY"
 	case IN2_BOOK_BOOK_STATUS__NORMAL:
@@ -213,10 +195,6 @@ func (v In2BookBookStatus) Label() string {
 	switch v {
 	case IN2_BOOK_BOOK_STATUS_UNKNOWN:
 		return ""
-	case IN2_BOOK_BOOK_STATUS__PENGDING:
-		return "等待导入"
-	case IN2_BOOK_BOOK_STATUS__PROCESS:
-		return "导入中"
 	case IN2_BOOK_BOOK_STATUS__READY:
 		return "就绪"
 	case IN2_BOOK_BOOK_STATUS__NORMAL:
