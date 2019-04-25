@@ -13,22 +13,22 @@ import (
 )
 
 func init() {
-	Router.Register(courier.NewRouter(GetBooksMeta{}))
+	Router.Register(courier.NewRouter(GetBooks{}))
 }
 
 // 获取书籍元数据列表
-type GetBooksMeta struct {
+type GetBooks struct {
 	httpx.MethodGet
 	// 书籍状态
 	Status client_in2_book.BookStatus `name:"status" in:"query" default:""`
 	httplib.Pager
 }
 
-func (req GetBooksMeta) Path() string {
+func (req GetBooks) Path() string {
 	return ""
 }
 
-func (req GetBooksMeta) Output(ctx context.Context) (result interface{}, err error) {
+func (req GetBooks) Output(ctx context.Context) (result interface{}, err error) {
 	user := middleware.GetAuthUserFromContext(ctx)
 	request := client_in2_book.GetBooksMetaRequest{
 		UserID: user.UserID,
@@ -36,9 +36,9 @@ func (req GetBooksMeta) Output(ctx context.Context) (result interface{}, err err
 		Size:   req.Size,
 		Offset: req.Offset,
 	}
-	result, err = modules.GetBooksMeta(request, global.Config.ClientBook)
+	result, err = modules.GetBooks(request, global.Config.ClientBook)
 	if err != nil {
-		logrus.Errorf("[GetBooksMeta] modules.GetBooksMeta err: %v, request: %+v", err, request)
+		logrus.Errorf("[GetBooks] modules.GetBooks err: %v, request: %+v", err, request)
 	}
 	return
 }

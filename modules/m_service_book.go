@@ -44,3 +44,37 @@ func GetBooksMeta(req client_in2_book.GetBooksMetaRequest, client *client_in2_bo
 	}
 	return &resp.Body, nil
 }
+
+type GetBooksResult struct {
+	Data  []GetBooksResultItem `json:"data"`
+	Total int32                `json:"total"`
+}
+
+type GetBooksResultItem struct {
+	client_in2_book.BookMeta
+	client_in2_book.BookRepo
+}
+
+func GetBooks(req client_in2_book.GetBooksMetaRequest, client *client_in2_book.ClientIn2Book) (*GetBooksResult, error) {
+	resp, err := client.GetBooksMeta(req)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]GetBooksResultItem, 0)
+	for _, meta := range resp.Body.Data {
+		repo, err := GetBookRepoByBookID(meta.BookID, client)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, GetBooksResultItem{
+			meta,
+			*repo,
+		})
+	}
+
+	return &GetBooksResult{
+		result,
+		resp.Body.Total,
+	}, nil
+}
