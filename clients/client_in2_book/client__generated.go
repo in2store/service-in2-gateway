@@ -107,16 +107,16 @@ type GetBookRepoByBookIDResponse struct {
 }
 
 type GetBooksMetaRequest struct {
-	// 用户ID
-	UserID uint64 `in:"query" name:"userID"`
-	// 状态
-	Status BookStatus `in:"query" name:"status"`
-	// 分页大小
-	// 默认为 10，-1 为查询所有
-	Size int32 `default:"10" in:"query" name:"size,omitempty"`
 	// 分页偏移
 	// 默认为 0
 	Offset int32 `in:"query" name:"offset,omitempty"`
+	// 用户ID
+	UserID uint64 `in:"query" name:"userID,omitempty"`
+	// 状态
+	Status BookStatus `in:"query" name:"status,omitempty"`
+	// 分页大小
+	// 默认为 10，-1 为查询所有
+	Size int32 `default:"10" in:"query" name:"size,omitempty"`
 }
 
 func (c ClientIn2Book) GetBooksMeta(req GetBooksMetaRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBooksMetaResponse, err error) {

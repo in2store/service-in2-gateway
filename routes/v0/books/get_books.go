@@ -20,7 +20,7 @@ func init() {
 type GetBooksMeta struct {
 	httpx.MethodGet
 	// 书籍状态
-	Status client_in2_book.BookStatus `name:"status" in:"query"`
+	Status client_in2_book.BookStatus `name:"status" in:"query" default:""`
 	httplib.Pager
 }
 
