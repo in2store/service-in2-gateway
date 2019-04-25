@@ -1,8 +1,11 @@
 package channels
 
-import "github.com/johnnyeven/libtools/courier"
+import (
+	"github.com/in2store/service-in2-gateway/routes/middleware"
+	"github.com/johnnyeven/libtools/courier"
+)
 
-var Router = courier.NewRouter(ChannelsGroup{})
+var Router = courier.NewRouter(middleware.MiddlewareAuth, ChannelsGroup{})
 
 type ChannelsGroup struct {
 	courier.EmptyOperator
