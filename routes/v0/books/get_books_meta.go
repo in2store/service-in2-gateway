@@ -5,7 +5,6 @@ import (
 	"github.com/in2store/service-in2-gateway/clients/client_in2_book"
 	"github.com/in2store/service-in2-gateway/global"
 	"github.com/in2store/service-in2-gateway/modules"
-	"github.com/in2store/service-in2-gateway/routes/middleware"
 	"github.com/johnnyeven/libtools/courier"
 	"github.com/johnnyeven/libtools/courier/httpx"
 	"github.com/johnnyeven/libtools/httplib"
@@ -19,6 +18,8 @@ func init() {
 // 获取书籍元数据列表
 type GetBooksMeta struct {
 	httpx.MethodGet
+	// 用户ID
+	UserID uint64 `name:"userID,string" in:"query"`
 	// 书籍状态
 	Status client_in2_book.BookStatus `name:"status" in:"query" default:""`
 	httplib.Pager
@@ -29,9 +30,8 @@ func (req GetBooksMeta) Path() string {
 }
 
 func (req GetBooksMeta) Output(ctx context.Context) (result interface{}, err error) {
-	user := middleware.GetAuthUserFromContext(ctx)
 	request := client_in2_book.GetBooksMetaRequest{
-		UserID: user.UserID,
+		UserID: req.UserID,
 		Status: req.Status,
 		Size:   req.Size,
 		Offset: req.Offset,

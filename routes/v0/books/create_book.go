@@ -13,7 +13,7 @@ import (
 )
 
 func init() {
-	Router.Register(courier.NewRouter(CreateBook{}))
+	Router.Register(courier.NewRouter(middleware.MiddlewareAuth, CreateBook{}))
 }
 
 type CreateBookBody struct {
