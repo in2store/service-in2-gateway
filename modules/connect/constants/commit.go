@@ -10,5 +10,5 @@ type GetCommitsParams struct {
 	EndTime   time.Time `json:"endTime"`
 }
 
-type Commit struct {
+type Commit interface {
 }

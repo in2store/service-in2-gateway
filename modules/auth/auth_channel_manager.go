@@ -18,6 +18,7 @@ func init() {
 type AuthTokenChannel interface {
 	GetChannelName() string
 	GetEntityByToken(token string) (*client_in2_user.User, error)
+	GetEntriesByEntity(entityID uint64) (client_in2_user.UserEntryList, error)
 }
 
 type AuthChannelManager struct {

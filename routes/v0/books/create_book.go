@@ -64,7 +64,7 @@ func (req CreateBook) Output(ctx context.Context) (result interface{}, err error
 			Comment:      req.Body.Comment,
 			CoverKey:     req.Body.CoverKey,
 			Title:        req.Body.Title,
-			UserID:       user.UserID,
+			UserID:       user.User.UserID,
 		},
 		CreateBookRepoParams: client_in2_book.CreateBookRepoParams{
 			ChannelID:      req.Body.ChannelID,

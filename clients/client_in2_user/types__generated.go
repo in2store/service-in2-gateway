@@ -53,4 +53,23 @@ type User struct {
 	UserID uint64 `json:"userID,string"`
 }
 
+type UserEntry struct {
+	//
+	PrimaryID
+	//
+	OperateTime
+	//
+	SoftDelete
+	// 入口系统通道ID
+	ChannelID uint64 `json:"channelID,string"`
+	// 入口系统唯一标识
+	EntryID string `json:"entryID"`
+	// 业务ID
+	UserEntryID uint64 `json:"userEntryID,string"`
+	// UserID
+	UserID uint64 `json:"userID,string"`
+}
+
+type UserEntryList []UserEntry
+
 type UserList []User

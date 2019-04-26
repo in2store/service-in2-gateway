@@ -38,3 +38,14 @@ func (c *InternalService) GetEntityByToken(token string) (*client_in2_user.User,
 	}
 	return &user.Body, nil
 }
+
+func (c *InternalService) GetEntriesByEntity(entityID uint64) (client_in2_user.UserEntryList, error) {
+	request := client_in2_user.GetEntriesRequest{
+		UserID: entityID,
+	}
+	entries, err := c.clientUser.GetEntries(request)
+	if err != nil {
+		return nil, err
+	}
+	return entries.Body, nil
+}

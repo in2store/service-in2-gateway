@@ -1,9 +1,12 @@
 package constants
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 type Repo interface {
-	GetBranches() ([]Branch, error)
+	GetBranches(ctx context.Context, size, page int32) ([]Branch, PaginationInfo, error)
 	GetCommits(req GetCommitsParams) ([]Commit, error)
 
 	GetAllowMergeCommit() bool

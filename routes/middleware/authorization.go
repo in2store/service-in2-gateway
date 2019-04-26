@@ -23,6 +23,11 @@ func (req Authorization) ContextKey() string {
 	return contextKeyAuthorization
 }
 
+type AuthorizationResp struct {
+	User    *client_in2_user.User
+	Entries client_in2_user.UserEntryList
+}
+
 func (req Authorization) Output(ctx context.Context) (result interface{}, err error) {
 	tokens := strings.Split(req.Token, ":")
 	if len(tokens) < 2 {
@@ -32,17 +37,25 @@ func (req Authorization) Output(ctx context.Context) (result interface{}, err er
 	if !exist {
 		return nil, errors.BadAuthChannal
 	}
-	resp, err := c.GetEntityByToken(strings.Join(tokens[1:], ":"))
+	user, err := c.GetEntityByToken(strings.Join(tokens[1:], ":"))
 	if err != nil {
 		logrus.Errorf("Authorization.GetEntityByToken err: %v, request: %v", err, req.Token)
 		return nil, err
 	}
-	return resp, nil
+	entries, err := c.GetEntriesByEntity(user.UserID)
+	if err != nil {
+		logrus.Errorf("Authorization.GetEntriesByEntity err: %v, request: %d", err, user.UserID)
+		return nil, err
+	}
+	return AuthorizationResp{
+		User:    user,
+		Entries: entries,
+	}, nil
 }
 
-func GetAuthUserFromContext(ctx context.Context) *client_in2_user.User {
+func GetAuthUserFromContext(ctx context.Context) AuthorizationResp {
 	value := courier.GetContextValue(ctx, &Authorization{})
-	s, ok := value.(*client_in2_user.User)
+	s, ok := value.(AuthorizationResp)
 	if !ok {
 		logrus.Panicf("GetAuthUserFromContext format err: %+v", s)
 	}

@@ -29,7 +29,7 @@ func (GithubChannel) ChannelID() uint64 {
 	return global.Config.GithubChannelID
 }
 
-func (c *GithubChannel) GetRepos(ctx context.Context, size, page int32) ([]constants.Repo, constants.PaginationInfo, error) {
+func (c *GithubChannel) GetRepos(ctx context.Context, user string, size, page int32) ([]constants.Repo, constants.PaginationInfo, error) {
 	var listOption *github.RepositoryListOptions
 	if size > 0 && page > 0 {
 		listOption = &github.RepositoryListOptions{
@@ -39,7 +39,7 @@ func (c *GithubChannel) GetRepos(ctx context.Context, size, page int32) ([]const
 			},
 		}
 	}
-	repos, resp, err := c.client.Repositories.List(ctx, "", listOption)
+	repos, resp, err := c.client.Repositories.List(ctx, user, listOption)
 	if err != nil {
 		return nil, constants.PaginationInfo{}, err
 	}
@@ -48,6 +48,35 @@ func (c *GithubChannel) GetRepos(ctx context.Context, size, page int32) ([]const
 	for _, repo := range repos {
 		result = append(result, &GithubRepo{
 			*repo,
+			c,
+		})
+	}
+
+	return result, constants.PaginationInfo{
+		NextPage:  int32(resp.NextPage),
+		PrevPage:  int32(resp.PrevPage),
+		FirstPage: int32(resp.FirstPage),
+		LastPage:  int32(resp.LastPage),
+	}, nil
+}
+
+func (c *GithubChannel) GetBranches(ctx context.Context, owner string, repo string, size, page int32) ([]constants.Branch, constants.PaginationInfo, error) {
+	var listOption *github.ListOptions
+	if size > 0 && page > 0 {
+		listOption = &github.ListOptions{
+			Page:    int(page),
+			PerPage: int(size),
+		}
+	}
+	branches, resp, err := c.client.Repositories.ListBranches(ctx, owner, repo, listOption)
+	if err != nil {
+		return nil, constants.PaginationInfo{}, err
+	}
+
+	result := make([]constants.Branch, 0)
+	for _, branch := range branches {
+		result = append(result, &GithubBranch{
+			*branch,
 		})
 	}
 
