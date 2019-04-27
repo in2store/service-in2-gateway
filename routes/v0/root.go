@@ -3,6 +3,7 @@ package v0
 import (
 	"github.com/in2store/service-in2-gateway/routes/v0/books"
 	"github.com/in2store/service-in2-gateway/routes/v0/channels"
+	"github.com/in2store/service-in2-gateway/routes/v0/metas"
 	"github.com/in2store/service-in2-gateway/routes/v0/repos"
 	"github.com/johnnyeven/libtools/courier"
 )
@@ -13,6 +14,7 @@ func init() {
 	Router.Register(repos.Router)
 	Router.Register(books.Router)
 	Router.Register(channels.Router)
+	Router.Register(metas.Router)
 }
 
 type V0Group struct {

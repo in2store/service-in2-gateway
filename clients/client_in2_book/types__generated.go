@@ -114,6 +114,13 @@ type GetBooksMetaResult struct {
 
 type JSONBytes = github_com_johnnyeven_libtools_courier_swagger.JSONBytes
 
+type MetaItem struct {
+	//
+	Label string `json:"label"`
+	//
+	Value string `json:"value"`
+}
+
 type MySQLTimestamp = github_com_johnnyeven_libtools_timelib.MySQLTimestamp
 
 type OperateTime = github_com_johnnyeven_libtools_sqlx_presets.OperateTime

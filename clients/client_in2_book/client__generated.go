@@ -10,9 +10,11 @@ import (
 
 type ClientIn2BookInterface interface {
 	CreateBook(req CreateBookRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *CreateBookResponse, err error)
+	GetBookLanguage(metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBookLanguageResponse, err error)
 	GetBookMetaByBookID(req GetBookMetaByBookIDRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBookMetaByBookIDResponse, err error)
 	GetBookRepoByBookID(req GetBookRepoByBookIDRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBookRepoByBookIDResponse, err error)
 	GetBooksMeta(req GetBooksMetaRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBooksMetaResponse, err error)
+	GetCodeLanguage(metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetCodeLanguageResponse, err error)
 }
 
 type ClientIn2Book struct {
@@ -62,6 +64,23 @@ type CreateBookResponse struct {
 	Body CreateBookResult
 }
 
+func (c ClientIn2Book) GetBookLanguage(metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBookLanguageResponse, err error) {
+	resp = &GetBookLanguageResponse{}
+	resp.Meta = github_com_johnnyeven_libtools_courier.Metadata{}
+
+	err = c.Request(c.Name+".GetBookLanguage", "GET", "/in2-book/v0/metas/book-language", nil, metas...).
+		Do().
+		BindMeta(resp.Meta).
+		Into(&resp.Body)
+
+	return
+}
+
+type GetBookLanguageResponse struct {
+	Meta github_com_johnnyeven_libtools_courier.Metadata
+	Body []MetaItem
+}
+
 type GetBookMetaByBookIDRequest struct {
 	// 书籍ID
 	BookID uint64 `in:"path" name:"bookID"`
@@ -107,16 +126,16 @@ type GetBookRepoByBookIDResponse struct {
 }
 
 type GetBooksMetaRequest struct {
-	// 分页偏移
-	// 默认为 0
-	Offset int32 `in:"query" name:"offset,omitempty"`
-	// 用户ID
-	UserID uint64 `in:"query" name:"userID,omitempty"`
 	// 状态
 	Status BookStatus `in:"query" name:"status,omitempty"`
 	// 分页大小
 	// 默认为 10，-1 为查询所有
 	Size int32 `default:"10" in:"query" name:"size,omitempty"`
+	// 分页偏移
+	// 默认为 0
+	Offset int32 `in:"query" name:"offset,omitempty"`
+	// 用户ID
+	UserID uint64 `in:"query" name:"userID,omitempty"`
 }
 
 func (c ClientIn2Book) GetBooksMeta(req GetBooksMetaRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBooksMetaResponse, err error) {
@@ -134,6 +153,23 @@ func (c ClientIn2Book) GetBooksMeta(req GetBooksMetaRequest, metas ...github_com
 type GetBooksMetaResponse struct {
 	Meta github_com_johnnyeven_libtools_courier.Metadata
 	Body GetBooksMetaResult
+}
+
+func (c ClientIn2Book) GetCodeLanguage(metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetCodeLanguageResponse, err error) {
+	resp = &GetCodeLanguageResponse{}
+	resp.Meta = github_com_johnnyeven_libtools_courier.Metadata{}
+
+	err = c.Request(c.Name+".GetCodeLanguage", "GET", "/in2-book/v0/metas/code-language", nil, metas...).
+		Do().
+		BindMeta(resp.Meta).
+		Into(&resp.Body)
+
+	return
+}
+
+type GetCodeLanguageResponse struct {
+	Meta github_com_johnnyeven_libtools_courier.Metadata
+	Body []MetaItem
 }
 
 func (c ClientIn2Book) Swagger(metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *SwaggerResponse, err error) {
