@@ -1,6 +1,7 @@
 package client_in2_book
 
 import (
+	github_com_johnnyeven_libtools_courier_enumeration "github.com/johnnyeven/libtools/courier/enumeration"
 	github_com_johnnyeven_libtools_courier_status_error "github.com/johnnyeven/libtools/courier/status_error"
 	github_com_johnnyeven_libtools_courier_swagger "github.com/johnnyeven/libtools/courier/swagger"
 	github_com_johnnyeven_libtools_sqlx_presets "github.com/johnnyeven/libtools/sqlx/presets"
@@ -20,6 +21,8 @@ type BookMeta struct {
 	BookID uint64 `json:"bookID,string"`
 	// 文档语言
 	BookLanguage BookLanguage `json:"bookLanguage"`
+	// 类别ID
+	CategoryKey string `json:"categoryKey"`
 	// 代码语言
 	CodeLanguage CodeLanguage `json:"codeLanguage"`
 	// 简介
@@ -58,6 +61,29 @@ type BookRepo struct {
 }
 
 type BookStatus = In2BookBookStatus
+
+type Bool = github_com_johnnyeven_libtools_courier_enumeration.Bool
+
+type Category struct {
+	//
+	PrimaryID
+	//
+	OperateTime
+	//
+	SoftDelete
+	// 业务ID
+	CategoryKey string `json:"categoryKey"`
+	// 图标类名
+	IconClassName string `json:"iconClassName"`
+	// 分类名
+	Name string `json:"name"`
+	// 是否保留为系统预设
+	Reserved Bool `json:"reserved"`
+	// 排序
+	Sort int32 `json:"sort"`
+}
+
+type CategoryList []Category
 
 type CodeLanguage = In2BookCodeLanguage
 
@@ -101,6 +127,19 @@ type CreateBookResult struct {
 	BookID uint64 `json:"bookID,string"`
 }
 
+type CreateCategoryBody struct {
+	// 分类Key
+	CategoryKey string `json:"categoryKey"`
+	// 图标类名
+	IconClassName string `json:"iconClassName"`
+	// 分类名
+	Name string `json:"name"`
+	// 是否保留为系统预设
+	Reserved Bool `json:"reserved,omitempty"`
+	// 排序
+	Sort int32 `default:"0" json:"sort,omitempty"`
+}
+
 type ErrorField = github_com_johnnyeven_libtools_courier_status_error.ErrorField
 
 type ErrorFields = github_com_johnnyeven_libtools_courier_status_error.ErrorFields
@@ -108,6 +147,13 @@ type ErrorFields = github_com_johnnyeven_libtools_courier_status_error.ErrorFiel
 type GetBooksMetaResult struct {
 	//
 	Data BookMetaList `json:"data"`
+	//
+	Total int32 `json:"total"`
+}
+
+type GetCategoriesResult struct {
+	//
+	Data CategoryList `json:"data"`
 	//
 	Total int32 `json:"total"`
 }
@@ -127,6 +173,22 @@ type OperateTime = github_com_johnnyeven_libtools_sqlx_presets.OperateTime
 
 type PrimaryID = github_com_johnnyeven_libtools_sqlx_presets.PrimaryID
 
+type SetBookCategoryBody struct {
+	// 分类标识
+	CategoryKey string `json:"categoryKey"`
+}
+
 type SoftDelete = github_com_johnnyeven_libtools_sqlx_presets.SoftDelete
 
 type StatusError = github_com_johnnyeven_libtools_courier_status_error.StatusError
+
+type UpdateCategoryBody struct {
+	// 图标类名
+	IconClassName string `json:"iconClassName"`
+	// 分类名
+	Name string `json:"name"`
+	// 是否保留为系统预设
+	Reserved Bool `json:"reserved,omitempty"`
+	// 排序
+	Sort int32 `default:"0" json:"sort,omitempty"`
+}

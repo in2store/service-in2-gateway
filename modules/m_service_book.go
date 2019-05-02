@@ -2,6 +2,7 @@ package modules
 
 import (
 	"github.com/in2store/service-in2-gateway/clients/client_in2_book"
+	"github.com/johnnyeven/libtools/httplib"
 )
 
 func CreateBook(req client_in2_book.CreateBookBody, client *client_in2_book.ClientIn2Book) (*client_in2_book.CreateBookResult, error) {
@@ -118,4 +119,15 @@ func GetBooks(req client_in2_book.GetBooksMetaRequest, client *client_in2_book.C
 		result,
 		resp.Body.Total,
 	}, nil
+}
+
+func GetCategories(pager httplib.Pager, client *client_in2_book.ClientIn2Book) (*client_in2_book.GetCategoriesResult, error) {
+	resp, err := client.GetCategories(client_in2_book.GetCategoriesRequest{
+		Size:   pager.Size,
+		Offset: pager.Offset,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Body, nil
 }
