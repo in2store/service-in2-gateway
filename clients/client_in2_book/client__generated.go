@@ -11,13 +11,15 @@ import (
 type ClientIn2BookInterface interface {
 	CreateBook(req CreateBookRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *CreateBookResponse, err error)
 	CreateCategory(req CreateCategoryRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *CreateCategoryResponse, err error)
+	CreateTag(req CreateTagRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *CreateTagResponse, err error)
 	GetBookLanguage(metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBookLanguageResponse, err error)
 	GetBookMetaByBookID(req GetBookMetaByBookIDRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBookMetaByBookIDResponse, err error)
 	GetBookRepoByBookID(req GetBookRepoByBookIDRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBookRepoByBookIDResponse, err error)
 	GetBooksMeta(req GetBooksMetaRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBooksMetaResponse, err error)
 	GetCategories(req GetCategoriesRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetCategoriesResponse, err error)
 	GetCodeLanguage(metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetCodeLanguageResponse, err error)
-	SetBookCategory(req SetBookCategoryRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *SetBookCategoryResponse, err error)
+	SetBookTag(req SetBookTagRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *SetBookTagResponse, err error)
+	UpdateBookMeta(req UpdateBookMetaRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *UpdateBookMetaResponse, err error)
 	UpdateCategory(req UpdateCategoryRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *UpdateCategoryResponse, err error)
 }
 
@@ -90,6 +92,28 @@ type CreateCategoryResponse struct {
 	Body Category
 }
 
+type CreateTagRequest struct {
+	//
+	Body CreateTagBody `fmt:"json" in:"body"`
+}
+
+func (c ClientIn2Book) CreateTag(req CreateTagRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *CreateTagResponse, err error) {
+	resp = &CreateTagResponse{}
+	resp.Meta = github_com_johnnyeven_libtools_courier.Metadata{}
+
+	err = c.Request(c.Name+".CreateTag", "POST", "/in2-book/v0/tags", req, metas...).
+		Do().
+		BindMeta(resp.Meta).
+		Into(&resp.Body)
+
+	return
+}
+
+type CreateTagResponse struct {
+	Meta github_com_johnnyeven_libtools_courier.Metadata
+	Body Tag
+}
+
 func (c ClientIn2Book) GetBookLanguage(metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBookLanguageResponse, err error) {
 	resp = &GetBookLanguageResponse{}
 	resp.Meta = github_com_johnnyeven_libtools_courier.Metadata{}
@@ -152,16 +176,20 @@ type GetBookRepoByBookIDResponse struct {
 }
 
 type GetBooksMetaRequest struct {
-	// 分页偏移
-	// 默认为 0
-	Offset int32 `in:"query" name:"offset,omitempty"`
 	// 用户ID
 	UserID uint64 `in:"query" name:"userID,omitempty"`
 	// 状态
 	Status BookStatus `in:"query" name:"status,omitempty"`
+	// 分类
+	CategoryKey string `in:"query" name:"categoryKey,omitempty"`
+	// 是否精选
+	Selected Bool `in:"query" name:"selected,omitempty"`
 	// 分页大小
 	// 默认为 10，-1 为查询所有
 	Size int32 `default:"10" in:"query" name:"size,omitempty"`
+	// 分页偏移
+	// 默认为 0
+	Offset int32 `in:"query" name:"offset,omitempty"`
 }
 
 func (c ClientIn2Book) GetBooksMeta(req GetBooksMetaRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBooksMetaResponse, err error) {
@@ -226,18 +254,18 @@ type GetCodeLanguageResponse struct {
 	Body []MetaItem
 }
 
-type SetBookCategoryRequest struct {
+type SetBookTagRequest struct {
 	// 文档ID
 	BookID uint64 `in:"path" name:"bookID"`
 	//
-	Body SetBookCategoryBody `fmt:"json" in:"body"`
+	Body SetBookTagBody `fmt:"json" in:"body"`
 }
 
-func (c ClientIn2Book) SetBookCategory(req SetBookCategoryRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *SetBookCategoryResponse, err error) {
-	resp = &SetBookCategoryResponse{}
+func (c ClientIn2Book) SetBookTag(req SetBookTagRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *SetBookTagResponse, err error) {
+	resp = &SetBookTagResponse{}
 	resp.Meta = github_com_johnnyeven_libtools_courier.Metadata{}
 
-	err = c.Request(c.Name+".SetBookCategory", "POST", "/in2-book/v0/books/:bookID/category", req, metas...).
+	err = c.Request(c.Name+".SetBookTag", "POST", "/in2-book/v0/books/:bookID/tags", req, metas...).
 		Do().
 		BindMeta(resp.Meta).
 		Into(&resp.Body)
@@ -245,7 +273,7 @@ func (c ClientIn2Book) SetBookCategory(req SetBookCategoryRequest, metas ...gith
 	return
 }
 
-type SetBookCategoryResponse struct {
+type SetBookTagResponse struct {
 	Meta github_com_johnnyeven_libtools_courier.Metadata
 	Body []byte
 }
@@ -265,6 +293,30 @@ func (c ClientIn2Book) Swagger(metas ...github_com_johnnyeven_libtools_courier.M
 type SwaggerResponse struct {
 	Meta github_com_johnnyeven_libtools_courier.Metadata
 	Body JSONBytes
+}
+
+type UpdateBookMetaRequest struct {
+	// 书籍ID
+	BookID uint64 `in:"path" name:"bookID"`
+	//
+	Body UpdateBookMetaParams `fmt:"json" in:"body"`
+}
+
+func (c ClientIn2Book) UpdateBookMeta(req UpdateBookMetaRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *UpdateBookMetaResponse, err error) {
+	resp = &UpdateBookMetaResponse{}
+	resp.Meta = github_com_johnnyeven_libtools_courier.Metadata{}
+
+	err = c.Request(c.Name+".UpdateBookMeta", "PATCH", "/in2-book/v0/books/:bookID/meta", req, metas...).
+		Do().
+		BindMeta(resp.Meta).
+		Into(&resp.Body)
+
+	return
+}
+
+type UpdateBookMetaResponse struct {
+	Meta github_com_johnnyeven_libtools_courier.Metadata
+	Body BookMeta
 }
 
 type UpdateCategoryRequest struct {

@@ -29,6 +29,8 @@ type BookMeta struct {
 	Comment string `json:"comment"`
 	// 封面图片key
 	CoverKey string `json:"coverKey"`
+	// 是否精选
+	Selected Bool `json:"selected"`
 	// 状态
 	Status BookStatus `json:"status"`
 	// 标题
@@ -140,6 +142,11 @@ type CreateCategoryBody struct {
 	Sort int32 `default:"0" json:"sort,omitempty"`
 }
 
+type CreateTagBody struct {
+	// 标签名称
+	Name string `json:"name"`
+}
+
 type ErrorField = github_com_johnnyeven_libtools_courier_status_error.ErrorField
 
 type ErrorFields = github_com_johnnyeven_libtools_courier_status_error.ErrorFields
@@ -173,14 +180,46 @@ type OperateTime = github_com_johnnyeven_libtools_sqlx_presets.OperateTime
 
 type PrimaryID = github_com_johnnyeven_libtools_sqlx_presets.PrimaryID
 
-type SetBookCategoryBody struct {
+type SetBookTagBody struct {
 	// 分类标识
-	CategoryKey string `json:"categoryKey"`
+	TagID uint64 `json:"tagID,string"`
 }
 
 type SoftDelete = github_com_johnnyeven_libtools_sqlx_presets.SoftDelete
 
 type StatusError = github_com_johnnyeven_libtools_courier_status_error.StatusError
+
+type Tag struct {
+	//
+	PrimaryID
+	//
+	OperateTime
+	//
+	SoftDelete
+	// 热度
+	Heat uint32 `json:"heat"`
+	// 名称
+	Name string `json:"name"`
+	// 业务ID
+	TagID uint64 `json:"tagID,string"`
+}
+
+type UpdateBookMetaParams struct {
+	// 文档语言
+	BookLanguage BookLanguage `json:"bookLanguage,omitempty"`
+	// 代码语言
+	CodeLanguage CodeLanguage `json:"codeLanguage,omitempty"`
+	// 简介
+	Comment string `json:"comment,omitempty"`
+	// 封面图片key
+	CoverKey string `json:"coverKey,omitempty"`
+	// 是否精选
+	Selected Bool `json:"selected,omitempty"`
+	// 状态
+	Status BookStatus `json:"status,omitempty"`
+	// 标题
+	Title string `json:"title,omitempty"`
+}
 
 type UpdateCategoryBody struct {
 	// 图标类名
