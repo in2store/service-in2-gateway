@@ -124,11 +124,6 @@ type CreateBookRepoParams struct {
 	SummaryPath string `json:"summaryPath"`
 }
 
-type CreateBookResult struct {
-	//
-	BookID uint64 `json:"bookID,string"`
-}
-
 type CreateCategoryBody struct {
 	// 分类Key
 	CategoryKey string `json:"categoryKey"`

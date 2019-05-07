@@ -68,7 +68,7 @@ func (c ClientIn2Book) CreateBook(req CreateBookRequest, metas ...github_com_joh
 
 type CreateBookResponse struct {
 	Meta github_com_johnnyeven_libtools_courier.Metadata
-	Body CreateBookResult
+	Body BookMeta
 }
 
 type CreateCategoryRequest struct {
@@ -177,8 +177,6 @@ type GetBookRepoByBookIDResponse struct {
 }
 
 type GetBooksMetaRequest struct {
-	// 状态
-	Status BookStatus `in:"query" name:"status,omitempty"`
 	// 分类
 	CategoryKey string `in:"query" name:"categoryKey,omitempty"`
 	// 是否精选
@@ -191,6 +189,8 @@ type GetBooksMetaRequest struct {
 	Offset int32 `in:"query" name:"offset,omitempty"`
 	// 用户ID
 	UserID uint64 `in:"query" name:"userID,omitempty"`
+	// 状态
+	Status BookStatus `in:"query" name:"status,omitempty"`
 }
 
 func (c ClientIn2Book) GetBooksMeta(req GetBooksMetaRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBooksMetaResponse, err error) {
@@ -211,14 +211,14 @@ type GetBooksMetaResponse struct {
 }
 
 type GetCategoriesRequest struct {
-	// 是否仅获取非保留分类
-	FilterReserved Bool `default:"TRUE" in:"query" name:"filterReserved,omitempty"`
 	// 分页大小
 	// 默认为 10，-1 为查询所有
 	Size int32 `default:"10" in:"query" name:"size,omitempty"`
 	// 分页偏移
 	// 默认为 0
 	Offset int32 `in:"query" name:"offset,omitempty"`
+	// 是否仅获取非保留分类
+	FilterReserved Bool `default:"TRUE" in:"query" name:"filterReserved,omitempty"`
 }
 
 func (c ClientIn2Book) GetCategories(req GetCategoriesRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetCategoriesResponse, err error) {

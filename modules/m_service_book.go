@@ -5,7 +5,7 @@ import (
 	"github.com/johnnyeven/libtools/httplib"
 )
 
-func CreateBook(req client_in2_book.CreateBookBody, client *client_in2_book.ClientIn2Book) (*client_in2_book.CreateBookResult, error) {
+func CreateBook(req client_in2_book.CreateBookBody, client *client_in2_book.ClientIn2Book) (*client_in2_book.BookMeta, error) {
 	request := client_in2_book.CreateBookRequest{
 		Body: req,
 	}
