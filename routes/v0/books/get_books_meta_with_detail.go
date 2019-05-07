@@ -16,7 +16,7 @@ func init() {
 	Router.Register(courier.NewRouter(GetBooksMetaWithDetail{}))
 }
 
-// 获取书籍元数据列表
+// 获取书籍元数据列表（包含用户及标签）
 type GetBooksMetaWithDetail struct {
 	httpx.MethodGet
 	// 用户ID
