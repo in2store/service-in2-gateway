@@ -131,3 +131,13 @@ func GetCategories(pager httplib.Pager, client *client_in2_book.ClientIn2Book) (
 	}
 	return &resp.Body, nil
 }
+
+func GetTagsByBookID(bookID uint64, client *client_in2_book.ClientIn2Book) (client_in2_book.TagList, error) {
+	resp, err := client.GetTagsByBookID(client_in2_book.GetTagsByBookIDRequest{
+		BookID: bookID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return resp.Body, nil
+}

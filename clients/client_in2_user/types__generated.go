@@ -10,6 +10,8 @@ import (
 type CreateUserParams struct {
 	//
 	Entries []CreateUserParamsEntry `json:"entries"`
+	//
+	Name string `json:"name"`
 }
 
 type CreateUserParamsEntry struct {
@@ -49,6 +51,8 @@ type User struct {
 	OperateTime
 	//
 	SoftDelete
+	// 用户名
+	Name string `json:"name"`
 	// 业务ID
 	UserID uint64 `json:"userID,string"`
 }

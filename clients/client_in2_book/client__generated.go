@@ -18,6 +18,7 @@ type ClientIn2BookInterface interface {
 	GetBooksMeta(req GetBooksMetaRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBooksMetaResponse, err error)
 	GetCategories(req GetCategoriesRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetCategoriesResponse, err error)
 	GetCodeLanguage(metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetCodeLanguageResponse, err error)
+	GetTagsByBookID(req GetTagsByBookIDRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetTagsByBookIDResponse, err error)
 	SetBookTag(req SetBookTagRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *SetBookTagResponse, err error)
 	UpdateBookMeta(req UpdateBookMetaRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *UpdateBookMetaResponse, err error)
 	UpdateCategory(req UpdateCategoryRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *UpdateCategoryResponse, err error)
@@ -176,8 +177,6 @@ type GetBookRepoByBookIDResponse struct {
 }
 
 type GetBooksMetaRequest struct {
-	// 用户ID
-	UserID uint64 `in:"query" name:"userID,omitempty"`
 	// 状态
 	Status BookStatus `in:"query" name:"status,omitempty"`
 	// 分类
@@ -190,6 +189,8 @@ type GetBooksMetaRequest struct {
 	// 分页偏移
 	// 默认为 0
 	Offset int32 `in:"query" name:"offset,omitempty"`
+	// 用户ID
+	UserID uint64 `in:"query" name:"userID,omitempty"`
 }
 
 func (c ClientIn2Book) GetBooksMeta(req GetBooksMetaRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBooksMetaResponse, err error) {
@@ -252,6 +253,28 @@ func (c ClientIn2Book) GetCodeLanguage(metas ...github_com_johnnyeven_libtools_c
 type GetCodeLanguageResponse struct {
 	Meta github_com_johnnyeven_libtools_courier.Metadata
 	Body []MetaItem
+}
+
+type GetTagsByBookIDRequest struct {
+	// 文档ID
+	BookID uint64 `in:"path" name:"bookID"`
+}
+
+func (c ClientIn2Book) GetTagsByBookID(req GetTagsByBookIDRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetTagsByBookIDResponse, err error) {
+	resp = &GetTagsByBookIDResponse{}
+	resp.Meta = github_com_johnnyeven_libtools_courier.Metadata{}
+
+	err = c.Request(c.Name+".GetTagsByBookID", "GET", "/in2-book/v0/books/:bookID/tags", req, metas...).
+		Do().
+		BindMeta(resp.Meta).
+		Into(&resp.Body)
+
+	return
+}
+
+type GetTagsByBookIDResponse struct {
+	Meta github_com_johnnyeven_libtools_courier.Metadata
+	Body TagList
 }
 
 type SetBookTagRequest struct {

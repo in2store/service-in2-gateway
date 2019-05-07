@@ -137,7 +137,7 @@ type CreateCategoryBody struct {
 	// 分类名
 	Name string `json:"name"`
 	// 是否保留为系统预设
-	Reserved Bool `json:"reserved,omitempty"`
+	Reserved Bool `default:"FALSE" json:"reserved,omitempty"`
 	// 排序
 	Sort int32 `default:"0" json:"sort,omitempty"`
 }
@@ -203,6 +203,8 @@ type Tag struct {
 	// 业务ID
 	TagID uint64 `json:"tagID,string"`
 }
+
+type TagList []Tag
 
 type UpdateBookMetaParams struct {
 	// 文档语言
