@@ -9,6 +9,7 @@ import (
 	"github.com/johnnyeven/libtools/courier"
 	"github.com/johnnyeven/libtools/courier/enumeration"
 	"github.com/johnnyeven/libtools/courier/httpx"
+	"github.com/johnnyeven/libtools/sqlx/presets"
 	"github.com/sirupsen/logrus"
 )
 
@@ -63,6 +64,8 @@ type GetBooksMetaWithDetailItem struct {
 	Tags client_in2_book.TagList `json:"tags"`
 	// 用户信息
 	User *client_in2_user.User `json:"user"`
+
+	presets.OperateTime
 }
 
 func (req GetBooksMetaWithDetail) Path() string {
@@ -108,6 +111,10 @@ func (req GetBooksMetaWithDetail) Output(ctx context.Context) (result interface{
 			Title:        meta.Title,
 			Tags:         tags,
 			User:         user,
+			OperateTime: presets.OperateTime{
+				CreateTime: meta.CreateTime,
+				UpdateTime: meta.UpdateTime,
+			},
 		})
 	}
 	return GetBooksMetaWithDetailResult{
