@@ -3,7 +3,6 @@ package channels
 import (
 	"context"
 	"github.com/in2store/service-in2-gateway/clients/client_in2_auth"
-	"github.com/in2store/service-in2-gateway/constants/errors"
 	"github.com/in2store/service-in2-gateway/global"
 	"github.com/johnnyeven/libtools/courier"
 	"github.com/johnnyeven/libtools/courier/httpx"
@@ -32,7 +31,7 @@ func (req GetAuthURL) Output(ctx context.Context) (result interface{}, err error
 	resp, err := global.Config.ClientAuth.GetAuthURL(request)
 	if err != nil {
 		logrus.Errorf("[GetAuthURL] ClientAuth.GetAuthURL err: %v, request: %+v", err, request)
-		return nil, errors.UpstreamError
+		return nil, err
 	}
 	return resp.Body, nil
 }
