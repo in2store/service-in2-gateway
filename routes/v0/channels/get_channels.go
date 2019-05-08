@@ -2,6 +2,7 @@ package channels
 
 import (
 	"context"
+	"github.com/in2store/service-in2-gateway/constants/errors"
 	"github.com/in2store/service-in2-gateway/global"
 	"github.com/in2store/service-in2-gateway/modules"
 	"github.com/johnnyeven/libtools/courier"
@@ -26,6 +27,7 @@ func (req GetChannels) Output(ctx context.Context) (result interface{}, err erro
 	result, err = modules.GetChannels(global.Config.ClientAuth)
 	if err != nil {
 		logrus.Errorf("[GetChannels] modules.GetChannels err: %v", err)
+		return nil, errors.UpstreamError
 	}
 	return
 }
