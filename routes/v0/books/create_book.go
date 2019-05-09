@@ -27,6 +27,8 @@ type CreateBookBody struct {
 	CoverKey string `json:"coverKey" default:""`
 	// 标题
 	Title string `json:"title"`
+	// 书籍分类
+	CategoryKey string `json:"categoryKey"`
 	// 通道ID
 	ChannelID uint64 `json:"channelID,string"`
 	// 分支名
@@ -64,6 +66,7 @@ func (req CreateBook) Output(ctx context.Context) (result interface{}, err error
 			Comment:      req.Body.Comment,
 			CoverKey:     req.Body.CoverKey,
 			Title:        req.Body.Title,
+			CategoryKey:  req.Body.CategoryKey,
 			UserID:       user.User.UserID,
 		},
 		CreateBookRepoParams: client_in2_book.CreateBookRepoParams{

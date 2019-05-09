@@ -99,6 +99,8 @@ type CreateBookBody struct {
 type CreateBookMetaParams struct {
 	// 文档语言
 	BookLanguage BookLanguage `json:"bookLanguage,omitempty"`
+	// 书籍分类
+	CategoryKey string `json:"categoryKey"`
 	// 代码语言
 	CodeLanguage CodeLanguage `json:"codeLanguage,omitempty"`
 	// 简介

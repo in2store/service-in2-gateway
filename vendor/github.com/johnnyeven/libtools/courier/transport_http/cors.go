@@ -36,6 +36,7 @@ func setCORS(headers *http.Header, req *http.Request) {
 		"Authorization",
 		"AppToken",
 		"AccessKey",
+		"X-Token",
 	}, ","))
 	headers.Set("Access-Control-Max-Age", strconv.FormatInt(int64(12*time.Hour/time.Second), 10))
 }
