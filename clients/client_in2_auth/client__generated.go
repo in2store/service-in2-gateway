@@ -64,7 +64,7 @@ func (c ClientIn2Auth) Authorize(req AuthorizeRequest, metas ...github_com_johnn
 
 type AuthorizeResponse struct {
 	Meta github_com_johnnyeven_libtools_courier.Metadata
-	Body []byte
+	Body Session
 }
 
 type CreateChannelRequest struct {

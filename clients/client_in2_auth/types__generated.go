@@ -1,7 +1,6 @@
 package client_in2_auth
 
 import (
-	github_com_johnnyeven_libtools_courier_httpx "github.com/johnnyeven/libtools/courier/httpx"
 	github_com_johnnyeven_libtools_courier_status_error "github.com/johnnyeven/libtools/courier/status_error"
 	github_com_johnnyeven_libtools_courier_swagger "github.com/johnnyeven/libtools/courier/swagger"
 	github_com_johnnyeven_libtools_sqlx_presets "github.com/johnnyeven/libtools/sqlx/presets"
@@ -88,8 +87,6 @@ type Session struct {
 type SoftDelete = github_com_johnnyeven_libtools_sqlx_presets.SoftDelete
 
 type StatusError = github_com_johnnyeven_libtools_courier_status_error.StatusError
-
-type StatusMovedPermanently = github_com_johnnyeven_libtools_courier_httpx.StatusMovedPermanently
 
 type Token struct {
 	//

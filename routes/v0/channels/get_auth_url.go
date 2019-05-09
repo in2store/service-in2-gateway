@@ -17,11 +17,11 @@ func init() {
 type GetAuthURL struct {
 	httpx.MethodGet
 	// ChannelID
-	ChannelID uint64 `name:"channelId,string" in:"path"`
+	ChannelID uint64 `name:"channelID,string" in:"path"`
 }
 
 func (req GetAuthURL) Path() string {
-	return "/:channelId/auth"
+	return "/:channelID/auth-url"
 }
 
 func (req GetAuthURL) Output(ctx context.Context) (result interface{}, err error) {
