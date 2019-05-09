@@ -9,6 +9,7 @@ import (
 	"github.com/in2store/service-in2-gateway/routes/middleware"
 	"github.com/johnnyeven/libtools/courier"
 	"github.com/johnnyeven/libtools/courier/httpx"
+	"github.com/johnnyeven/libtools/courier/status_error"
 	"github.com/sirupsen/logrus"
 )
 
@@ -79,6 +80,9 @@ func (req CreateBook) Output(ctx context.Context) (result interface{}, err error
 	}
 	result, err = modules.CreateBook(request, global.Config.ClientBook)
 	if err != nil {
+		if status_error.FromError(err).Key == "BookConflict" {
+			return nil, err
+		}
 		logrus.Errorf("[CreateBook] err: %v, request: %+v", err, request)
 		return nil, errors.UpstreamError
 	}
