@@ -141,3 +141,21 @@ func GetTagsByBookID(bookID uint64, client *client_in2_book.ClientIn2Book) (clie
 	}
 	return resp.Body, nil
 }
+
+func CreateTag(req client_in2_book.CreateTagBody, client *client_in2_book.ClientIn2Book) (*client_in2_book.Tag, error) {
+	resp, err := client.CreateTag(client_in2_book.CreateTagRequest{
+		Body: req,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Body, err
+}
+
+func GetTags(req client_in2_book.GetTagsRequest, client *client_in2_book.ClientIn2Book) (client_in2_book.TagList, error) {
+	resp, err := client.GetTags(req)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Body, nil
+}

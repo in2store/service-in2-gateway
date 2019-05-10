@@ -18,6 +18,7 @@ type ClientIn2BookInterface interface {
 	GetBooksMeta(req GetBooksMetaRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBooksMetaResponse, err error)
 	GetCategories(req GetCategoriesRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetCategoriesResponse, err error)
 	GetCodeLanguage(metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetCodeLanguageResponse, err error)
+	GetTags(req GetTagsRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetTagsResponse, err error)
 	GetTagsByBookID(req GetTagsByBookIDRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetTagsByBookIDResponse, err error)
 	SetBookTag(req SetBookTagRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *SetBookTagResponse, err error)
 	UpdateBookMeta(req UpdateBookMetaRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *UpdateBookMetaResponse, err error)
@@ -177,10 +178,6 @@ type GetBookRepoByBookIDResponse struct {
 }
 
 type GetBooksMetaRequest struct {
-	// 状态
-	Status BookStatus `in:"query" name:"status,omitempty"`
-	// 分类
-	CategoryKey string `in:"query" name:"categoryKey,omitempty"`
 	// 是否精选
 	Selected Bool `in:"query" name:"selected,omitempty"`
 	// 分页大小
@@ -191,6 +188,10 @@ type GetBooksMetaRequest struct {
 	Offset int32 `in:"query" name:"offset,omitempty"`
 	// 用户ID
 	UserID uint64 `in:"query" name:"userID,omitempty"`
+	// 状态
+	Status BookStatus `in:"query" name:"status,omitempty"`
+	// 分类
+	CategoryKey string `in:"query" name:"categoryKey,omitempty"`
 }
 
 func (c ClientIn2Book) GetBooksMeta(req GetBooksMetaRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBooksMetaResponse, err error) {
@@ -253,6 +254,30 @@ func (c ClientIn2Book) GetCodeLanguage(metas ...github_com_johnnyeven_libtools_c
 type GetCodeLanguageResponse struct {
 	Meta github_com_johnnyeven_libtools_courier.Metadata
 	Body []MetaItem
+}
+
+type GetTagsRequest struct {
+	// 是否过滤零热度项
+	FilterZeroHeat Bool `in:"query" name:"filterZeroHeat"`
+	// 是否依照热度排序
+	OrderByHeat Bool `in:"query" name:"orderByHeat"`
+}
+
+func (c ClientIn2Book) GetTags(req GetTagsRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetTagsResponse, err error) {
+	resp = &GetTagsResponse{}
+	resp.Meta = github_com_johnnyeven_libtools_courier.Metadata{}
+
+	err = c.Request(c.Name+".GetTags", "GET", "/in2-book/v0/tags", req, metas...).
+		Do().
+		BindMeta(resp.Meta).
+		Into(&resp.Body)
+
+	return
+}
+
+type GetTagsResponse struct {
+	Meta github_com_johnnyeven_libtools_courier.Metadata
+	Body TagList
 }
 
 type GetTagsByBookIDRequest struct {
