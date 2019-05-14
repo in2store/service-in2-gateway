@@ -159,3 +159,11 @@ func GetTags(req client_in2_book.GetTagsRequest, client *client_in2_book.ClientI
 	}
 	return resp.Body, nil
 }
+
+func GetBooksByTag(req client_in2_book.GetBooksByTagRequest, client *client_in2_book.ClientIn2Book) (*client_in2_book.GetBooksByTagResult, error) {
+	resp, err := client.GetBooksByTag(req)
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Body, nil
+}

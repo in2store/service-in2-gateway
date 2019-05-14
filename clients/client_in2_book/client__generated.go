@@ -15,6 +15,7 @@ type ClientIn2BookInterface interface {
 	GetBookLanguage(metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBookLanguageResponse, err error)
 	GetBookMetaByBookID(req GetBookMetaByBookIDRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBookMetaByBookIDResponse, err error)
 	GetBookRepoByBookID(req GetBookRepoByBookIDRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBookRepoByBookIDResponse, err error)
+	GetBooksByTag(req GetBooksByTagRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBooksByTagResponse, err error)
 	GetBooksMeta(req GetBooksMetaRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBooksMetaResponse, err error)
 	GetCategories(req GetCategoriesRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetCategoriesResponse, err error)
 	GetCodeLanguage(metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetCodeLanguageResponse, err error)
@@ -177,6 +178,36 @@ type GetBookRepoByBookIDResponse struct {
 	Body BookRepo
 }
 
+type GetBooksByTagRequest struct {
+	// 分页大小
+	// 默认为 10，-1 为查询所有
+	Size int32 `default:"10" in:"query" name:"size,omitempty"`
+	// 分页偏移
+	// 默认为 0
+	Offset int32 `in:"query" name:"offset,omitempty"`
+	// 标签ID（优先级高）
+	TagID uint64 `in:"path" name:"tagID"`
+	// 标签名称
+	Name string `in:"query" name:"name,omitempty"`
+}
+
+func (c ClientIn2Book) GetBooksByTag(req GetBooksByTagRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetBooksByTagResponse, err error) {
+	resp = &GetBooksByTagResponse{}
+	resp.Meta = github_com_johnnyeven_libtools_courier.Metadata{}
+
+	err = c.Request(c.Name+".GetBooksByTag", "GET", "/in2-book/v0/tags/:tagID/books", req, metas...).
+		Do().
+		BindMeta(resp.Meta).
+		Into(&resp.Body)
+
+	return
+}
+
+type GetBooksByTagResponse struct {
+	Meta github_com_johnnyeven_libtools_courier.Metadata
+	Body GetBooksByTagResult
+}
+
 type GetBooksMetaRequest struct {
 	// 是否精选
 	Selected Bool `in:"query" name:"selected,omitempty"`
@@ -257,10 +288,10 @@ type GetCodeLanguageResponse struct {
 }
 
 type GetTagsRequest struct {
-	// 是否过滤零热度项
-	FilterZeroHeat Bool `in:"query" name:"filterZeroHeat"`
 	// 是否依照热度排序
 	OrderByHeat Bool `in:"query" name:"orderByHeat"`
+	// 是否过滤零热度项
+	FilterZeroHeat Bool `in:"query" name:"filterZeroHeat"`
 }
 
 func (c ClientIn2Book) GetTags(req GetTagsRequest, metas ...github_com_johnnyeven_libtools_courier.Metadata) (resp *GetTagsResponse, err error) {

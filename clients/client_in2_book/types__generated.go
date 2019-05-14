@@ -148,6 +148,13 @@ type ErrorField = github_com_johnnyeven_libtools_courier_status_error.ErrorField
 
 type ErrorFields = github_com_johnnyeven_libtools_courier_status_error.ErrorFields
 
+type GetBooksByTagResult struct {
+	//
+	Data BookMetaList `json:"data"`
+	//
+	Total int32 `json:"total"`
+}
+
 type GetBooksMetaResult struct {
 	//
 	Data BookMetaList `json:"data"`
