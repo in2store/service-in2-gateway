@@ -18,7 +18,7 @@ func init() {
 	Router.Register(courier.NewRouter(GetBooksByTagWithDetail{}))
 }
 
-// 通过标签名称获取书籍列表
+// 通过标签名称获取书籍列表（包含标签及用户信息）
 type GetBooksByTagWithDetail struct {
 	httpx.MethodGet
 	// 标签名称
