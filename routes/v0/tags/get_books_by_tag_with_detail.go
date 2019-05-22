@@ -1,57 +1,49 @@
-package books
+package tags
 
 import (
 	"context"
 	"github.com/in2store/service-in2-gateway/clients/client_in2_book"
+	"github.com/in2store/service-in2-gateway/constants/errors"
 	"github.com/in2store/service-in2-gateway/global"
 	"github.com/in2store/service-in2-gateway/modules"
 	"github.com/johnnyeven/libtools/courier"
-	"github.com/johnnyeven/libtools/courier/enumeration"
 	"github.com/johnnyeven/libtools/courier/httpx"
+	"github.com/johnnyeven/libtools/courier/status_error"
+	"github.com/johnnyeven/libtools/httplib"
 	"github.com/johnnyeven/libtools/sqlx/presets"
 	"github.com/sirupsen/logrus"
 )
 
 func init() {
-	Router.Register(courier.NewRouter(GetBooksMetaWithDetail{}))
+	Router.Register(courier.NewRouter(GetBooksByTagWithDetail{}))
 }
 
-// 获取书籍元数据列表（包含用户及标签）
-type GetBooksMetaWithDetail struct {
+// 通过标签名称获取书籍列表
+type GetBooksByTagWithDetail struct {
 	httpx.MethodGet
-	// 用户ID
-	UserID uint64 `name:"userID,string" in:"query" default:""`
-	// 书籍状态
-	Status client_in2_book.BookStatus `name:"status" in:"query" default:""`
-	// 分类
-	CategoryKey string `in:"query" name:"categoryKey" default:""`
-	// 是否精选
-	Selected enumeration.Bool `in:"query" name:"selected" default:""`
-	// 分页大小
-	// 默认为 10，-1 为查询所有
-	Size int32 `name:"size" in:"query" default:"10"  validate:"@int32[-1,10]"`
-	// 分页偏移
-	// 默认为 0
-	Offset int32 `name:"offset,omitempty" in:"query" validate:"@int32[0,]"`
+	// 标签名称
+	Name string `name:"name" in:"query"`
+	httplib.Pager
 }
 
-func (req GetBooksMetaWithDetail) Path() string {
-	return "/:bookID/meta-full"
+func (req GetBooksByTagWithDetail) Path() string {
+	return "/:tagID/books-full"
 }
 
-func (req GetBooksMetaWithDetail) Output(ctx context.Context) (result interface{}, err error) {
-	request := client_in2_book.GetBooksMetaRequest{
-		UserID:      req.UserID,
-		Status:      req.Status,
-		CategoryKey: req.CategoryKey,
-		Selected:    req.Selected,
-		Size:        req.Size,
-		Offset:      req.Offset,
+func (req GetBooksByTagWithDetail) Output(ctx context.Context) (result interface{}, err error) {
+	request := client_in2_book.GetBooksByTagRequest{
+		Size:   req.Size,
+		Offset: req.Offset,
+		TagID:  0,
+		Name:   req.Name,
 	}
-	resp, err := modules.GetBooksMeta(request, global.Config.ClientBook)
+	resp, err := modules.GetBooksByTag(request, global.Config.ClientBook)
 	if err != nil {
-		logrus.Errorf("[GetBooksMeta] modules.GetBooksMeta err: %v, request: %+v", err, request)
-		return
+		if status_error.FromError(err).Key == "TagNotFound" {
+			return nil, err
+		}
+		logrus.Errorf("[GetBooksByTag] modules.GetBooksByTag err: %v, request: %+v", err, req)
+		return nil, errors.UpstreamError
 	}
 
 	data := make([]modules.GetBooksMetaWithDetailItem, 0)
@@ -88,4 +80,5 @@ func (req GetBooksMetaWithDetail) Output(ctx context.Context) (result interface{
 		Data:  data,
 		Total: resp.Total,
 	}, nil
+	return
 }

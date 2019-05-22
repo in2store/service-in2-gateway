@@ -2,7 +2,10 @@ package modules
 
 import (
 	"github.com/in2store/service-in2-gateway/clients/client_in2_book"
+	"github.com/in2store/service-in2-gateway/clients/client_in2_user"
+	"github.com/johnnyeven/libtools/courier/enumeration"
 	"github.com/johnnyeven/libtools/httplib"
+	"github.com/johnnyeven/libtools/sqlx/presets"
 )
 
 func CreateBook(req client_in2_book.CreateBookBody, client *client_in2_book.ClientIn2Book) (*client_in2_book.BookMeta, error) {
@@ -166,4 +169,36 @@ func GetBooksByTag(req client_in2_book.GetBooksByTagRequest, client *client_in2_
 		return nil, err
 	}
 	return &resp.Body, nil
+}
+
+type GetBooksMetaWithDetailResult struct {
+	Data  []GetBooksMetaWithDetailItem `json:"data"`
+	Total int32                        `json:"total"`
+}
+
+type GetBooksMetaWithDetailItem struct {
+	// 文档ID
+	BookID uint64 `json:"bookID,string"`
+	// 文档语言
+	BookLanguage client_in2_book.BookLanguage `json:"bookLanguage"`
+	// 类别ID
+	CategoryKey string `json:"categoryKey"`
+	// 代码语言
+	CodeLanguage client_in2_book.CodeLanguage `json:"codeLanguage"`
+	// 简介
+	Comment string `json:"comment"`
+	// 封面图片key
+	CoverKey string `json:"coverKey"`
+	// 是否精选
+	Selected enumeration.Bool `json:"selected"`
+	// 状态
+	Status client_in2_book.BookStatus `json:"status"`
+	// 标题
+	Title string `json:"title"`
+	// 标签
+	Tags client_in2_book.TagList `json:"tags"`
+	// 用户信息
+	User *client_in2_user.User `json:"user"`
+
+	presets.OperateTime
 }
